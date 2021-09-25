@@ -14,8 +14,8 @@ export function Home() {
 
     if (taskAlreadyExists) {
       Alert.alert(
-        'Atenção!',
-        'Tarefa já cadastrada com está descrição.'
+        'Task já cadastrada.',
+        'Você não pode cadastrar uma task com o mesmo nome.'
       );
       return;
     }
@@ -42,12 +42,34 @@ export function Home() {
 
   function handleRemoveTask(id: number) {
     //TODO - remove task from state
-    setTasks(olsTasks => olsTasks.filter(task => task.id !== id));
+    Alert.alert(
+      'Romover item.',
+      'Tem certeza que você deseja remover esse item?',
+      [
+        {
+          text: 'Não',
+        },
+        {
+          text: 'Sim',
+          onPress: () => setTasks(olsTasks => olsTasks.filter(task => task.id !== id)),
+        }
+      ]
+    )
+  }
+
+  function handleEditTask(taskId: number, taskNewTitle: string) {
+    const updatedTasks = tasks.map(task => (
+      task.id === taskId
+        ? { ...task, title: taskNewTitle }
+        : task
+    ));
+
+    setTasks(updatedTasks);
   }
 
   return (
     <View style={styles.container}>
-      <Header tasksCounter={tasks.length}/>
+      <Header tasksCounter={tasks.length} />
 
       <TodoInput addTask={handleAddTask} />
 
@@ -55,6 +77,7 @@ export function Home() {
         tasks={tasks}
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask}
+        editTask={handleEditTask}
       />
     </View>
   )
